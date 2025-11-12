@@ -1,7 +1,7 @@
 package trabs.trab1.grupo3;
 
 public class Mult extends BiOp{
-    private final int PRIORITY = 5;
+    private static final int PRIORITY = 5;
 
     protected Mult(Exp left, Exp right) {
         super(left, right, '*');

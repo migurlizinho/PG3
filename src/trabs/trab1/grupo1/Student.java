@@ -79,6 +79,16 @@ public class Student {
         return this.number + ": " + this.name + " - " + this.grade;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Student))
+            return false;
+        Student other = (Student) obj;
+        return this.number == other.number &&
+                this.name.equals(other.name) &&
+                this.grade == other.grade;
+    }
+
     public boolean equals(Student other) {
         if(other == null)
             return false;

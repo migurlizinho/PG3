@@ -1,7 +1,7 @@
 package trabs.trab1.grupo2;
 
 public abstract class MG extends Grade{
-    private Grade[] sequence;
+    private final Grade[] sequence;
 
     protected MG(Type type, Grade... sequence) throws GradeException{
         super(type);

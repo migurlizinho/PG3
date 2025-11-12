@@ -1,13 +1,15 @@
 package trabs.trab1.grupo2;
 
 public class GreaterGrade extends MG{
+    Grade max;
     public GreaterGrade(Type type, Grade... sequence) throws GradeException{
         super(type, sequence);
+        max = greater(sequence);
     }
 
     @Override
     public int getGrade() {
-        return greater(this.getSequence()).getGrade();
+        return max.getGrade();
     }
 
     @Override
@@ -22,8 +24,6 @@ public class GreaterGrade extends MG{
     @Override
     public void list(String prefix) {
         super.list(prefix);
-        for (Grade grade : getSequence()) {
-            grade.list("  ");
-        }
+        max.list(prefix);
     }
 }

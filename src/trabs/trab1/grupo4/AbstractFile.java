@@ -1,6 +1,6 @@
 package trabs.trab1.grupo4;
 
-public class AbstractFile implements File{
+public abstract class AbstractFile implements File{
     private final String name;
     protected File currentDir;
 
@@ -9,27 +9,27 @@ public class AbstractFile implements File{
     }
 
     @Override
-    public String getName() {
-        return "";
+    public final String getName() {
+        return name;
     }
 
     @Override
     public String getAbsolutePath() {
-        return "";
-    }
-
-    @Override
-    public int getLenght() {
-        return 0;
+        if(currentDir == null)
+            return name;
+        return currentDir.getAbsolutePath() + "/" + name;
     }
 
     @Override
     public void setCurrentDir(Dir dir) {
-
+        currentDir = dir;
     }
 
-    @Override
-    public String getDescription(String prefix) {
-        return "";
+    public String getDescription( String prefix ) {
+        return prefix + this;
+    }
+
+    public final String toString() {
+        return name +" – " + getLength()+ "KB";
     }
 }

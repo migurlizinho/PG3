@@ -1,7 +1,7 @@
 package trabs.trab1.grupo3;
 
-public class InvalidExpException extends RuntimeException {
-    Exp exp;
+public class InvalidExpException extends Exception {
+    private final Exp exp;
 
     public InvalidExpException(Exp exp, String message) {
         super(message + " -> " + exp.toString());
@@ -9,6 +9,7 @@ public class InvalidExpException extends RuntimeException {
     }
     public InvalidExpException(){
         super("Invalid expression");
+        exp = null;
     }
 
     public Exp getExp() {

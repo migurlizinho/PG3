@@ -1,7 +1,7 @@
 package trabs.trab1.grupo3;
 
 public class Var extends Elem{
-    private String name;
+    private final String name;
 
     public Var(String name, int value) {
         super(value);

@@ -5,7 +5,10 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.function.BiConsumer;
 
 public class GuiApp extends JFrame {
   private static JTextArea outputField;
@@ -93,9 +96,13 @@ public class GuiApp extends JFrame {
 
   private static void processToFile() {
     String fileName = filePathField.getText();
-    try {
-      cipherUtils.encryptFile(fileName, readN());
-    } catch (IOException e) {
-    }
+    FileWriter fw = null;
+      try {
+          fw = new FileWriter(fileName);
+          fw.write(outputField.getText());
+          fw.flush();
+          fw.close();
+      } catch (IOException e) {
+      }
   }
 }

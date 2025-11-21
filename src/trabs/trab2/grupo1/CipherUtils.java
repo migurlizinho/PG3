@@ -41,27 +41,26 @@ public class CipherUtils {
         return (char) encode(character, n);
       }
     };
-    BufferedReader br = new BufferedReader(new FileReader(pathname));
-    process(br, ceaserCipher, action);
-    br.close();
+    try(BufferedReader br = new BufferedReader(new FileReader(pathname))){
+        process(br, ceaserCipher, action);
+    }
   }
 
   void encryptFile(String pathname, int n) throws IOException {
     File file = new File(pathname);
-    if (!file.exists() || !file.isFile())
-      return;
-    FileWriter fileWriter = new FileWriter(file.getName() + ".cph");
-    BiConsumer<Character, Character> consumer = new BiConsumer<Character, Character>() {
-      @Override
-      public void accept(Character character, Character character2) {
-        try {
-          fileWriter.write(character2);
-        } catch (IOException e) {
-        }
-      }
-    };
-    processCipher(pathname, n, consumer);
-    fileWriter.close();
+    try(FileWriter fileWriter = new FileWriter(file.getName() + ".cph")){
+        BiConsumer<Character, Character> consumer = new BiConsumer<Character, Character>() {
+            @Override
+            public void accept(Character character, Character character2) {
+                try {
+                    fileWriter.write(character2);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+        processCipher(pathname, n, consumer);
+    }
   }
 
   void decryptFile(String pathname, int n) throws IOException {

@@ -38,6 +38,7 @@ public class TestCipherUtils {
 
         assertEquals("wyvnyhthjhv l mpel", c.processText("programacao e fixe", 7, true));
         assertEquals("programacao e fixe", c.processText("wyvnyhthjhv l mpel", 7, false));
+
         String normal = "If he had anything confidential to say, he wrote it in cipher, that is, by so changing the order of the letters of the alphabet, that not a word could be made out.";
         String encrypted = "Sp ro rkn kxidrsxq myxpsnoxdskv dy cki, ro gbydo sd sx mszrob, drkd sc, li cy mrkxqsxq dro ybnob yp dro voddobc yp dro kvzrklod, drkd xyd k gybn myevn lo wkno yed.";
         assertEquals(encrypted, c.processText(normal, 10, true));

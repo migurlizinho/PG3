@@ -1,8 +1,8 @@
 package trabs.trab2.grupo2;
 
-import trabs.trab1.grupo4.File;
-
+import javax.swing.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -22,21 +22,8 @@ public class AlgorithmUtils {
     }
 
     public static List<String> collectIncreasingStrings (List<String> seq){
-        Comparator<String> cmp = new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                    return o1.compareTo(o2);
-            }
-        };
         List<String> newSeq = new ArrayList<>();
-        Consumer<String> action = new Consumer<String>() {
-            @Override
-            public void accept(String string) {
-                newSeq.add(string);
-            }
-        };
-
-        processRisingElements(seq, cmp, action);
+        processRisingElements(seq, String::compareTo, newSeq::add);
         return newSeq;
     }
     public static <S extends Collection<Integer>> List<S> groupConsecutive(Iterable<Integer> it, Supplier<S> supplier){
@@ -57,16 +44,13 @@ public class AlgorithmUtils {
 
     private static double findMedian(Integer[] arr) {
         int n = arr.length;
-
         if (n % 2 != 0)
             return arr[n / 2];
-
         return (arr[(n - 1) / 2] + arr[n / 2]) / 2.0;
     }
 
     public static double[] mediansOfGroups(Iterable<Integer> sequence){
-        Supplier<Collection<Integer>> supplier = () -> {return new ArrayList<>();};
-        List<Collection<Integer>> list = groupConsecutive(sequence, supplier);
+        List<Collection<Integer>> list = groupConsecutive(sequence, ArrayList::new);
         double[] medians = new double[list.size()];
         int result;
         for (int i = 0; i < medians.length; i++) {
@@ -75,8 +59,29 @@ public class AlgorithmUtils {
         return medians;
     }
 
+    public static String getSurname(String name){
+        StringTokenizer tokenizer = new StringTokenizer(name);
+        String surname = null;
+        while (tokenizer.hasMoreTokens())
+            surname = tokenizer.nextToken();
+        return surname;
+    }
+
     public static <C extends Collection<String>> Map<String,C> families(File file, Supplier<Map<String, C>> supMap, Supplier<C> supC) throws IOException {
         Map<String, C> map = supMap.get();
-        return null;
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        C c = supC.get();
+        String line, surname;
+        while((line = reader.readLine()) != null){
+            surname = getSurname(line);
+            if(map.containsKey(surname)){
+                map.get(surname).add(line);
+            }else {
+                c.add(line);
+                map.put(surname, c);
+                c = supC.get();
+            }
+        }
+        return map;
     }
 }

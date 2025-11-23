@@ -45,10 +45,12 @@ public class GuiApp extends JFrame {
     content.add(centerPanel, BorderLayout.CENTER);
 
     inputField = new JTextArea();
+    inputField.setEditable(false);
     inputField.setBorder(new TitledBorder("Input"));
     centerPanel.add(inputField);
 
     outputField = new JTextArea();
+    outputField.setEditable(false);
     outputField.setBorder(new TitledBorder("Output"));
     centerPanel.add(outputField);
 

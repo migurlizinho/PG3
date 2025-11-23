@@ -26,8 +26,7 @@ public class CipherUtils {
     return c + n;
   }
 
-  public void process(BufferedReader br, UnaryOperator<Character> mapper,
-      BiConsumer<Character, Character> action) throws IOException {
+  public void process(BufferedReader br, UnaryOperator<Character> mapper, BiConsumer<Character, Character> action) throws IOException {
     int c;
     while ((c = br.read()) != -1) {
       action.accept((char) c, mapper.apply((char) c));
@@ -35,12 +34,7 @@ public class CipherUtils {
   }
 
   void processCipher(String pathname, int n, BiConsumer<Character, Character> action) throws IOException {
-    UnaryOperator<Character> ceaserCipher = new UnaryOperator<Character>() {
-      @Override
-      public Character apply(Character character) {
-        return (char) encode(character, n);
-      }
-    };
+    UnaryOperator<Character> ceaserCipher = (Character character) -> {return (char) encode(character, n);};
     try(BufferedReader br = new BufferedReader(new FileReader(pathname))){
         process(br, ceaserCipher, action);
     }
@@ -49,49 +43,27 @@ public class CipherUtils {
   void encryptFile(String pathname, int n) throws IOException {
     File file = new File(pathname);
     try(FileWriter fileWriter = new FileWriter(file.getName() + ".cph")){
-        BiConsumer<Character, Character> consumer = new BiConsumer<Character, Character>() {
-            @Override
-            public void accept(Character character, Character character2) {
-                try {
-                    fileWriter.write(character2);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        BiConsumer<Character, Character> consumer = (Character character, Character character2) -> {
+          try {
+            fileWriter.write(character2);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
         };
         processCipher(pathname, n, consumer);
     }
   }
 
   void decryptFile(String pathname, int n) throws IOException {
-    BiConsumer<Character, Character> consumer = new BiConsumer<Character, Character>() {
-      @Override
-      public void accept(Character character, Character character2) {
-        System.out.println(character2);
-      }
-    };
-    processCipher(pathname, -n, consumer);
+    processCipher(pathname, -n, (Character character, Character character2) -> {System.out.println(character2);});
   }
 
   String processText(String text, int n, boolean isEncrypt) throws IOException {
     StringWriter sw = new StringWriter();
-    BiConsumer<Character, Character> consumer = new BiConsumer<Character, Character>() {
-      @Override
-      public void accept(Character character, Character character2) {
-        sw.write(character2);
-      }
-    };
-
-    UnaryOperator<Character> operator = new UnaryOperator<Character>() {
-      @Override
-      public Character apply(Character character) {
-        if (isEncrypt)
-          return (char) encode(character, n);
-        else
-          return (char) encode(character, -n);
-      }
-    };
-    process(new BufferedReader(new StringReader(text)), operator, consumer);
+    int n2 = (isEncrypt)? n : -n;
+    process(new BufferedReader(new StringReader(text)),
+            (Character char1) -> {return (char) encode(char1, n2);}
+            , (Character char1, Character char2) -> {sw.write(char2);});
     return sw.toString();
   }
 }

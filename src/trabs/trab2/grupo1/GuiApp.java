@@ -3,39 +3,27 @@ package trabs.trab2.grupo1;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.function.BiConsumer;
 
 public class GuiApp extends JFrame {
-  private static JTextArea outputField;
-  private static JTextArea inputField;
-  private static final CipherUtils cipherUtils = new CipherUtils();
-  private static JTextField nShiftsField;
-  private static JTextField filePathField;
+  private final JTextField nShiftsField = new JTextField("1", 6);
+  private final JTextField filePathField = new JTextField(30);
+  private final JTextArea outputField = new JTextArea(18, 18);
+  private final JTextArea inputField = new JTextArea(18, 18);
+  private  final CipherUtils cipherUtils = new CipherUtils();
 
   public GuiApp() {
-    setSize(300, 300);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
-  }
-
-  public static void main(String[] args) {
-    GuiApp app = new GuiApp();
-    Container content = app.getContentPane();
-
-    // --------------------TOP PANEL---------------------
+    setLocationRelativeTo(null);
+    Container content = getContentPane();
 
     JPanel topPanel = new JPanel(new BorderLayout());
     content.add(topPanel, BorderLayout.NORTH);
 
-    filePathField = new JTextField(30);
     filePathField.setBorder(new TitledBorder("filename"));
     topPanel.add(filePathField, BorderLayout.CENTER);
 
-    nShiftsField = new JTextField("1", 5);
     nShiftsField.setBorder(new TitledBorder("n"));
     topPanel.add(nShiftsField, BorderLayout.EAST);
 
@@ -44,13 +32,9 @@ public class GuiApp extends JFrame {
     JPanel centerPanel = new JPanel(new GridLayout(1, 2));
     content.add(centerPanel, BorderLayout.CENTER);
 
-    inputField = new JTextArea();
-    inputField.setEditable(false);
     inputField.setBorder(new TitledBorder("Input"));
     centerPanel.add(inputField);
 
-    outputField = new JTextArea();
-    outputField.setEditable(false);
     outputField.setBorder(new TitledBorder("Output"));
     centerPanel.add(outputField);
 
@@ -60,51 +44,51 @@ public class GuiApp extends JFrame {
     content.add(bottomPanel, BorderLayout.SOUTH);
 
     JButton cipherButton = new JButton("Cipher");
-    cipherButton.addActionListener(e -> {
-      processInputToOutput(true);
-    });
+    cipherButton.addActionListener(e -> processFile(true));
     bottomPanel.add(cipherButton);
 
     JButton decipherButton = new JButton("Decipher");
-    decipherButton.addActionListener(e -> {
-      processInputToOutput(false);
-    });
+    decipherButton.addActionListener(e -> processFile(false));
     bottomPanel.add(decipherButton);
 
     JButton toFileButton = new JButton("To File");
-    toFileButton.addActionListener(e -> {
-      processToFile();
-    });
+    toFileButton.addActionListener(e -> processToFile());
     bottomPanel.add(toFileButton);
+    this.pack();
+  }
 
+  public static void main(String[] args) {
+    GuiApp app = new GuiApp();
     app.setVisible(true);
   }
 
-  private static int readN() {
+  private int readN() {
     String nStr = nShiftsField.getText();
     return (nStr.isEmpty()) ? 0 : Integer.parseInt(nStr);
   }
 
-  private static void processInputToOutput(boolean Encrypt) {
-    String input = inputField.getText();
-    int n = readN();
-    String encryptedText = null;
-    try {
-      encryptedText = cipherUtils.processText(input, n, Encrypt);
-    } catch (IOException exp) {
-    }
-    outputField.setText(encryptedText);
+  private void processFile(boolean isEncrypt){
+    String fileName = filePathField.getText();
+   try {
+      int n = (isEncrypt)? readN() : -readN();
+      inputField.setText("");
+      outputField.setText("");
+      cipherUtils.processCipher(fileName, n, ( c1, c2) -> {
+        inputField.append(String.valueOf(c1));
+        outputField.append(String.valueOf(c2));
+      });
+    }catch (IOException e){
+      JOptionPane.showMessageDialog(this, "Error reading file");
+    }catch (NumberFormatException e){
+     JOptionPane.showMessageDialog(this, "Error parsing n");
+   }
   }
 
-  private static void processToFile() {
-    String fileName = filePathField.getText();
-    FileWriter fw = null;
-      try {
-          fw = new FileWriter(fileName);
-          fw.write(outputField.getText());
-          fw.flush();
-          fw.close();
+  private void processToFile() {
+      try (FileWriter fw = new FileWriter("out.cph")){
+          fw.append(outputField.getText());
       } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Error creating file");
       }
   }
 }

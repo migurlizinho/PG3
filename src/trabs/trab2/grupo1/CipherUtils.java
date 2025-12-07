@@ -34,36 +34,35 @@ public class CipherUtils {
   }
 
   void processCipher(String pathname, int n, BiConsumer<Character, Character> action) throws IOException {
-    UnaryOperator<Character> ceaserCipher = (Character character) -> {return (char) encode(character, n);};
     try(BufferedReader br = new BufferedReader(new FileReader(pathname))){
-        process(br, ceaserCipher, action);
+        process(br, (c)->(char)encode(c, n), action);
     }
   }
 
   void encryptFile(String pathname, int n) throws IOException {
     File file = new File(pathname);
-    try(FileWriter fileWriter = new FileWriter(file.getName() + ".cph")){
-        BiConsumer<Character, Character> consumer = (Character character, Character character2) -> {
-          try {
-            fileWriter.write(character2);
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
+    try(PrintWriter fileWriter = new PrintWriter(file.getName() + ".cph")){
+        BiConsumer<Character, Character> consumer = (c1,c2) -> {
+            fileWriter.write(c2);
         };
         processCipher(pathname, n, consumer);
     }
   }
 
   void decryptFile(String pathname, int n) throws IOException {
-    processCipher(pathname, -n, (Character character, Character character2) -> {System.out.println(character2);});
+    processCipher(pathname, -n, (c1, c2) -> System.out.println(c2));
   }
 
-  String processText(String text, int n, boolean isEncrypt) throws IOException {
+  String processText(String text, int n, boolean isEncrypt) {
     StringWriter sw = new StringWriter();
     int n2 = (isEncrypt)? n : -n;
-    process(new BufferedReader(new StringReader(text)),
-            (Character char1) -> {return (char) encode(char1, n2);}
-            , (Character char1, Character char2) -> {sw.write(char2);});
-    return sw.toString();
+      try {
+          process(new BufferedReader(new StringReader(text)),
+                  (c) -> (char) encode(c, n2),
+                  (c1, c2) -> sw.write(c2));
+      } catch (IOException e) {
+          throw new RuntimeException(e);
+      }
+      return sw.toString();
   }
 }

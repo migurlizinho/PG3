@@ -12,9 +12,13 @@ import java.util.function.Supplier;
 public class AlgorithmUtils {
 
     public static <E> void processRisingElements(Collection<E> seq, Comparator<E> cmp, Consumer<E> action){
-        E biggest = (E) seq.toArray()[0];
-        for (E e : seq) {
-            if(cmp.compare(e, biggest) >= 0){
+        Iterator<E> i = seq.iterator();
+        if (!i.hasNext()) return;
+        E biggest = i.next();
+        action.accept(biggest);
+        while (i.hasNext()) {
+            E e = i.next();
+            if(cmp.compare(e, biggest) > 0){
                 biggest = e;
                 action.accept(e);
             }
@@ -23,15 +27,24 @@ public class AlgorithmUtils {
 
     public static List<String> collectIncreasingStrings (List<String> seq){
         List<String> newSeq = new ArrayList<>();
-        processRisingElements(seq, String::compareTo, newSeq::add);
+        processRisingElements(seq, String::compareToIgnoreCase, newSeq::add);
         return newSeq;
     }
+
+    private static int absolutDiff(int n1, int n2){
+        return Math.abs(Math.abs(n1) - Math.abs(n2));
+    }
+
     public static <S extends Collection<Integer>> List<S> groupConsecutive(Iterable<Integer> it, Supplier<S> supplier){
+        Iterator<Integer> iter = it.iterator();
         List<S> ret = new ArrayList<>();
+        if(!iter.hasNext()) return ret;
         S s = supplier.get();
-        int prev = it.iterator().next();
-        for (Integer i : it) {
-            if( i != prev + 1 && i != prev){
+        int prev = iter.next();
+        s.add(prev);
+        while (iter.hasNext()) {
+            Integer i = iter.next();
+            if(absolutDiff(i, prev) != 1){
                ret.add(s);
                s = supplier.get();
             }
@@ -42,19 +55,20 @@ public class AlgorithmUtils {
         return ret;
     }
 
-    private static double findMedian(Integer[] arr) {
-        int n = arr.length;
+    private static double findMedian(ArrayList<Integer> arr) {
+        int n = arr.size();
         if (n % 2 != 0)
-            return arr[n / 2];
-        return (arr[(n - 1) / 2] + arr[n / 2]) / 2.0;
+            return arr.get(n / 2);
+        return (arr.get((n - 1) / 2) + arr.get(n / 2)) / 2.0;
     }
 
     public static double[] mediansOfGroups(Iterable<Integer> sequence){
-        List<Collection<Integer>> list = groupConsecutive(sequence, ArrayList::new);
+        if(sequence == null || !sequence.iterator().hasNext())
+            return null;
+        List<ArrayList<Integer>> list = groupConsecutive(sequence, ArrayList::new);
         double[] medians = new double[list.size()];
-        int result;
         for (int i = 0; i < medians.length; i++) {
-            medians[i] = findMedian((Integer[]) list.get(i).toArray(new Integer[list.get(i).size()]));
+            medians[i] = findMedian(list.get(i));
         }
         return medians;
     }

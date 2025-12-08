@@ -3,9 +3,9 @@ package trabs.trab3;
 import javax.swing.*;
 
 public class Race {
-    private Car car1;
-    private Car car2;
-    private Car car3;
+    public Car car1;
+    public Car car2;
+    public Car car3;
 
     private int finnish = 100;
 

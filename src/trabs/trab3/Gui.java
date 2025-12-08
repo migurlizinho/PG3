@@ -28,6 +28,8 @@ public class Gui extends JFrame {
                 g.drawLine(0, h/4, w, h/4);
                 g.drawLine(0, 2*h/4, w, 2*h/4);
                 g.drawLine(0, 3*h/4, w, 3*h/4);
+
+                race.car1.getX();
             }
         };
         content.add(racePanel, BorderLayout.CENTER);
@@ -41,7 +43,7 @@ public class Gui extends JFrame {
             //Update Logic
             race.updateCars();
             //Display/Paint
-
+            racePanel.repaint();
         });
     }
 }

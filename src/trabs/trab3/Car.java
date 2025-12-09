@@ -3,12 +3,12 @@ package trabs.trab3;
 public abstract class Car {
     private final String name;
     private int x;
-    private int vel;
-    private int acc;
+    private double vel;
+    private double acc;
 
-    public Car(String name, int vel, int acc){
+    public Car(String name, int init_x,double vel, double acc){
         this.name = name;
-        this.x = 0;
+        this.x = init_x;
         this.vel = vel;
         this.acc = acc;
     }
@@ -18,8 +18,8 @@ public abstract class Car {
         x += vel;
     }
 
-    public void reset(){
-        x = 0;
+    public void reset(int x){
+        this.x = x;
         vel = 0;
         acc = 0;
     }
@@ -27,12 +27,12 @@ public abstract class Car {
     public int getX() {return x;}
     public void setX(int x) {this.x = x;}
 
-    public int getVel() {return vel;}
-    public void setVel(int vel) {this.vel = vel;}
-    public void addVel(int n){this.vel += n;}
+    public double getVel() {return vel;}
+    public void setVel(double vel) {this.vel = vel;}
+    public void addVel(double n){this.vel += n;}
 
-    public int getAcc() {return acc;}
-    public void setAcc(int acc) {this.acc = acc;}
+    public double getAcc() {return acc;}
+    public void setAcc(double acc) {this.acc = acc;}
 
     public final String getName(){return this.name;}
 

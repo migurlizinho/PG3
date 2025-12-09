@@ -1,36 +1,55 @@
 package trabs.trab3;
 
-import javax.swing.*;
-
 public class Race {
-    public Car car1;
-    public Car car2;
-    public Car car3;
+    public final Car car1;
+    public final Car car2;
+    public final Car car3;
 
-    private int finnish = 100;
+    public enum GameState{
+        ONGOING,CAR1,CAR2,CAR3
+    }
+    private GameState gameState = GameState.ONGOING;
 
-    public Race(){
-        car1 = new Sprinter("Sprinter");
-        car2 = new Crawler("Crawler");
-        car3 = new Robot("Robot");
+    private int finnish = 300;
+    private int start = 300;
+
+    public Race(int start, int finnish){
+        car1 = new Sprinter("Sprinter", start);
+        car2 = new Crawler("Crawler", start);
+        car3 = new Robot("Robot", start);
+        this.start = start;
+        this.finnish = finnish;
     }
 
     public void updateCars(){
         car1.move();
         car2.move();
         car3.move();
-        if(car1.getX() >= finnish)
+        if(car1.getX() >= finnish){
             restart(car1);
-        if(car2.getX() >= finnish)
+            gameState = GameState.CAR1;
+        }else if(car2.getX() >= finnish){
             restart(car2);
-        if(car3.getX() >= finnish)
+            gameState = GameState.CAR2;
+        } else if(car3.getX() >= finnish){
             restart(car3);
+            gameState = GameState.CAR3;
+        }
     }
 
     private void restart(Car winner){
-        System.out.println(winner.getName() + " Won !!!--------------------------------------");
-        car1.reset();
-        car2.reset();
-        car3.reset();
+        car1.reset(start);
+        car2.reset(start);
+        car3.reset(start);
     }
+
+    public void setFinnish(int finnish) {
+        this.finnish = finnish;
+    }
+
+    public GameState getGameState(){return gameState;}
+
+    public void startRace(){gameState = GameState.ONGOING;}
+
+    public int getFinnish(){return finnish;}
 }

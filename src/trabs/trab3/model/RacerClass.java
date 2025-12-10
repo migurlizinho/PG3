@@ -1,30 +1,42 @@
-package trabs.trab3;
+package trabs.trab3.model;
 
-public abstract class Car {
+public abstract class RacerClass implements Racer{
     private final String name;
     private int x;
     private double vel;
     private double acc;
+    public final String icon;
 
-    public Car(String name, int init_x,double vel, double acc){
+    public RacerClass(String name, double vel, double acc, String icon){
         this.name = name;
-        this.x = init_x;
+        this.x = 0;
         this.vel = vel;
         this.acc = acc;
+        this.icon = icon;
     }
 
-    public void move(){
+    @Override
+    public void walk() {
         vel += acc;
         x += vel;
     }
 
-    public void reset(int x){
-        this.x = x;
+    @Override
+    public void reset(){
+        x = 0;
         vel = 0;
         acc = 0;
     }
 
-    public int getX() {return x;}
+    @Override
+    public String getIdentifier() {
+        return name;
+    }
+
+    @Override
+    public int getPosition() {
+        return x;
+    }
     public void setX(int x) {this.x = x;}
 
     public double getVel() {return vel;}
@@ -33,7 +45,7 @@ public abstract class Car {
 
     public double getAcc() {return acc;}
     public void setAcc(double acc) {this.acc = acc;}
-
+    public void addAcc(double n){this.acc += n;}
     public final String getName(){return this.name;}
 
     @Override

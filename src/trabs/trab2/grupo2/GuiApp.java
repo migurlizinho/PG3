@@ -71,11 +71,11 @@ public class GuiApp extends JFrame{
   }
 
   public void loadAction(){
-    try{
-      map = AlgorithmUtils.families(new File(filePathField.getText()), HashMap::new, ArrayList::new);
-    } catch (IOException e) {
-      centerArea.setText("File \"" + filePathField.getText() + "\" not found");
-    }
+      try{
+          map = AlgorithmUtils.families(new File(filePathField.getText()), HashMap::new, ArrayList::new);
+      } catch (IOException e) {
+          centerArea.setText("File \"" + filePathField.getText() + "\" not found");
+      }
   }
 
   public boolean testParamsAction(){

@@ -13,13 +13,13 @@ E, tambem, o funcionamento do equals() padrão que compara os endereços da mem�
 Codigo adicionado:
 
       public String toString() {
-          return this.number + ": " + this.name + " - " + this.grade;
+          return this.number + ": " + this.indentifier + " - " + this.grade;
       }
 
       public boolean equals(Object obj) {
           Student other = (Student) obj;
           return this.number == other.number &&
-          this.name.equals(other.name);
+          this.indentifier.equals(other.indentifier);
       }
 Foi utilizado o mecanismo Overloading para alterar o funcionamento dos métodos toString() e equals() para obter o resultado experado.
 

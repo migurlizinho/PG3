@@ -22,7 +22,8 @@ public class RacePanel extends JPanel {
 
         for (Racer c : competitors) {
             JLabel lbl = new JLabel(c.getIdentifier().substring(0,2));
-            lbl.setBounds(width+2*BASE_X, BASE_Y + labels.size()*SPACING, LABEL_WIDTH, LABEL_HEIGHT);            labels.add(lbl);
+            lbl.setBounds(width+2*BASE_X, BASE_Y + labels.size()*SPACING, LABEL_WIDTH, LABEL_HEIGHT);
+            labels.add(lbl);
             add(lbl);
             lbl.setFont(getFont().deriveFont(Font.BOLD, 32f));
         }

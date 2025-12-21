@@ -12,16 +12,24 @@ import javax.swing.*;
 public class AppCarRacing {
     public static void main(String[] args) {
         // TODO: Implement code to read the player's name
-        String playerName = /* Replace this with the code to read user input */ null;
+        String playerName = JOptionPane.showInputDialog("Player Name: ");
+        if(playerName == null){
+            JOptionPane.showMessageDialog(null,"No player name!!!");
+            return;
+        }
 
         // Create a new RaceGame instance with:
         // - player name
         // - finish line at position 800
         // - three different types of racers
+//        RaceModel game = new RaceGame(playerName, 800,
+//                new Sprinter("🚗 sprinter"),
+//                new Crawler("🚙 crawler"),
+//                new Robot("🤖 robot"));
         RaceModel game = new RaceGame(playerName, 800,
-                new Sprinter("🚗 sprinter"),
-                new Crawler("🚙 crawler"),
-                new Robot("🤖 robot"));
+            new Sprinter("󰞩  sprinter"),
+            new Crawler("󰞨  crawler"),
+            new Robot("  robot"));
 
         // Create and display the main game frame (GUI),
         // passing the RaceGame instance to it

@@ -1,14 +1,14 @@
 package trabs.trab3.model;
 
 public abstract class RacerClass implements Racer{
-    private final String name;
+    private final String identifier;
     private int x;
     private double vel;
     private double acc;
     public final String icon;
 
-    public RacerClass(String name, double vel, double acc, String icon){
-        this.name = name;
+    public RacerClass(String identifier, double vel, double acc, String icon){
+        this.identifier = identifier;
         this.x = 0;
         this.vel = vel;
         this.acc = acc;
@@ -30,7 +30,7 @@ public abstract class RacerClass implements Racer{
 
     @Override
     public String getIdentifier() {
-        return name;
+        return identifier;
     }
 
     @Override
@@ -46,11 +46,10 @@ public abstract class RacerClass implements Racer{
     public double getAcc() {return acc;}
     public void setAcc(double acc) {this.acc = acc;}
     public void addAcc(double n){this.acc += n;}
-    public final String getName(){return this.name;}
 
     @Override
     public String toString() {
-        return name + "{" +
+        return identifier + "{" +
                 "x=" + x +
                 ", vel=" + vel +
                 ", acc=" + acc +

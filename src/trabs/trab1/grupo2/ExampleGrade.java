@@ -4,7 +4,7 @@ public class ExampleGrade {
     public static void main(String[] args) {
 //       SG sg = new SG(9, "John", 10);
 //        System.out.println(sg);
-//        System.out.println(sg.getName() + " is " + (sg.isApproved()? "Approved" : "Reproved"));
+//        System.out.println(sg.getIndentifier() + " is " + (sg.isApproved()? "Approved" : "Reproved"));
 //
 //        Grade[] seq = { new SG( 9, new Proof("1º Teste", 8) ),
 //                new SG( 8,"2º Teste", 8 ) };

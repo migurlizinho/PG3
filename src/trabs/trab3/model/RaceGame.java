@@ -2,24 +2,34 @@ package trabs.trab3.model;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class RaceGame implements RaceModel{
-    private static final String STATS_FILEPATH = "race_statistics.txt";
+    private static final String STATS_FILEPATH = "race_statistics";
 
-    private RaceModel.Statistics statistics;
-    private ArrayList<Racer> racers;
+    private HashMap<String,Statistics> allStats;
+    private final RaceModel.Statistics statistics;
+    private final ArrayList<Racer> racers;
     private final int finnishLine;
 
     public RaceGame(String playername, int finnishLine, Racer... racers){
-        this.racers = (ArrayList<Racer>) List.of(racers);
+        this.racers = new ArrayList<>(List.of(racers));
         this.finnishLine = finnishLine;
-        for (Statistics stats : getAllStatistics()) {
-            if(stats.getPlayerName().equals(playername)){
-                statistics = getPlayerStatistics();
-                if(statistics == null)
-                    statistics = new Stat(playername);
-            }
+
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(STATS_FILEPATH))) {
+            allStats = (HashMap<String, Statistics>) inputStream.readObject();
+        } catch (IOException e) {
+            allStats = new HashMap<>();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        if(allStats.containsKey(playername)){
+            statistics = allStats.get(playername);
+        }else {
+            statistics = new Stat(playername);
+            allStats.put(playername, statistics);
         }
     }
 
@@ -31,6 +41,7 @@ public class RaceGame implements RaceModel{
 
     @Override
     public void start(String bet) {
+        racers.forEach(Racer::reset);
     }
 
     @Override
@@ -45,9 +56,10 @@ public class RaceGame implements RaceModel{
 
     @Override
     public Iterable<Statistics> getTopTen() {
-        ArrayList<Statistics> allStats = (ArrayList<Statistics>) getAllStatistics();
-        allStats.sort((s1, s2) -> {return s2.percentageCorrectBets() - s1.percentageCorrectBets();});
-        return allStats.subList(0, 9);
+        ArrayList<Statistics> stats = new ArrayList<>(allStats.values());
+        stats.sort((s1, s2) -> {return s2.percentageCorrectBets() - s1.percentageCorrectBets();});
+        int n = Math.min(9, stats.size());
+        return stats.subList(0, n);
     }
 
     @Override
@@ -55,21 +67,14 @@ public class RaceGame implements RaceModel{
 
     @Override
     public Iterable<Statistics> getAllStatistics() {
-        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(STATS_FILEPATH))) {
-            statistics = (Statistics) inputStream.readObject();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
+        return allStats.values().stream().toList();
     }
 
     @Override
     public boolean saveStatistics() {
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(STATS_FILEPATH));
-            outputStream.writeObject(statistics);
+            outputStream.writeObject(allStats);
         } catch (IOException e) {
             return false;
         }

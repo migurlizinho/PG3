@@ -1,15 +1,17 @@
 package trabs.trab3.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Stat implements RaceModel.Statistics{
     private final String playerName;
     private int totalRaces;
     private int correctBets;
-    private Map<String, Integer> victories;
+    private final Map<String, Integer> victories;
 
     public Stat(String playerName) {
         this.playerName = playerName;
+        this.victories = new HashMap<>();
     }
 
     @Override
@@ -30,6 +32,21 @@ public class Stat implements RaceModel.Statistics{
     }
     @Override
     public int percentageCorrectBets() {
-        return (correctBets/totalRaces)*100;
+        double r = (double) correctBets / (double)((totalRaces == 0)? 1 : totalRaces);
+        return (int) (r * 100);
+    }
+
+    public String formatStringLn(){
+        return playerName + "   " + percentageCorrectBets() + "%  " + correctBets + "/" + totalRaces + "\n";
+    }
+
+    @Override
+    public String toString() {
+        return "Stat{" +
+            "playerName='" + playerName + '\'' +
+            ", totalRaces=" + totalRaces +
+            ", correctBets=" + correctBets +
+            ", victories=" + victories +
+            '}';
     }
 }
